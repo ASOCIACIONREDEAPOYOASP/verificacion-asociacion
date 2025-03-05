@@ -9,7 +9,7 @@
             font-family: Arial, sans-serif;
             text-align: center;
             background: url('https://raw.githubusercontent.com/ASOCIACIONREDEAPOYOASP/verificacion-asociacion/1700ddf01be7652394071f475605a2c72c906a0a/Sin%20t%C3%ADtulo-4.png') no-repeat center center fixed;
-            background-size: 650px;
+            background-size: 500px;
             background-color: rgb(0, 121, 67);
             margin: 0;
             padding: 0;
@@ -91,14 +91,37 @@
                 if (data.length > 0) {
                     console.log("Datos recibidos:", data);
                     let nombre = data[0].Nombre ? data[0].Nombre : "Desconocido";
+                    let apellidos = data[0].Apellidos ? data[0].Apellidos : "Desconocido";
                     let rango = data[0].Rango ? data[0].Rango : "No especificado";
+                    let estado = data[0].Estado ? data[0].Estado : "Número no encontrado";
+                    
+                    let estadoMensaje = "";
+                    switch (estado) {
+                        case "Activo":
+                            estadoMensaje = "✔️ Esta unidad se encuentra en servicio dentro de la Asociación Red de Apoyo A.S.P., contando con todos los beneficios, respaldo y facultades otorgadas por la organización. Cualquier verificación adicional puede ser solicitada a través de los canales oficiales de la asociación.";
+                            break;
+                        case "Inactivo":
+                            estadoMensaje = "⚠️ Esta unidad está vinculada a la Asociación Red de Apoyo A.S.P., pero actualmente no se encuentra en servicio activo. Por lo tanto, no cuenta con los beneficios, respaldo ni facultades otorgadas por la asociación hasta nueva actualización de su estado.";
+                            break;
+                        case "Desvinculado":
+                            estadoMensaje = "❌ Se informa que esta unidad ha sido desvinculada de la Asociación Red de Apoyo A.S.P. Por lo tanto, no cuenta con ningún beneficio, respaldo ni autorización para actuar en nombre de la asociación. Se solicita a la autoridad que realice la validación proceder con la retención y destrucción de la identificación presentada.";
+                            rango = "Desvinculado";
+                            break;
+                        default:
+                            estadoMensaje = "❌ Estado: No Registrado<br>El número de identificación o código ingresado no se encuentra en la base de datos de la Asociación Red de Apoyo A.S.P. Por lo tanto, la persona que presenta esta identificación no pertenece a la asociación ni cuenta con su respaldo o autorización. Se recomienda a la autoridad tomar las medidas pertinentes.";
+                            estado = "No Registrado";
+                            rango = "No Aplica";
+                            break;
+                    }
+                    
                     resultado.innerHTML = `
-                        ✔️ Usted pertenece a la asociación.<br>
-                        <strong>Nombre:</strong> ${nombre}<br>
-                        <strong>Rango:</strong> ${rango}
+                        ${estadoMensaje}<br>
+                        <strong>Nombre:</strong> ${nombre} ${apellidos}<br>
+                        <strong>Rango:</strong> ${rango}<br>
+                        <strong>Estado:</strong> ${estado}
                     `;
                 } else {
-                    resultado.innerText = "❌ Identificación o codifico no pertenece a la Asociación Red de Apoyo A.S.P.";
+                    resultado.innerHTML = "❌ Estado: No Registrado<br>El número de identificación o código ingresado no se encuentra en la base de datos de la Asociación Red de Apoyo A.S.P. Por lo tanto, la persona que presenta esta identificación no pertenece a la asociación ni cuenta con su respaldo o autorización. Se recomienda a la autoridad tomar las medidas pertinentes.";
                 }
             } catch (error) {
                 resultado.innerText = "⚠️ Error al conectar con la base de datos.";
