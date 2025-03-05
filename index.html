@@ -5,50 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificación Asociación</title>
 </head>
-<script>
-    async function verificarPertenencia() {
-        let codigo = document.getElementById("codigo").value.trim();
-        let resultado = document.getElementById("resultado");
-
-        if (codigo === "") {
-            resultado.innerHTML = "<p style='color: red;'>⚠️ Por favor, ingrese un valor.</p>";
-            return;
-        }
-
-        let url = `https://corsproxy.io/?https://sheetdb.io/api/v1/nommdgtrlnmya/search_or?Codifico=${codigo}&Cedula=${codigo}`;
-        console.log("Consultando URL:", url);
-
-        try {
-            let response = await fetch(url);
-            console.log("Estado de la respuesta:", response.status); // Ver si responde bien la API
-
-            let data = await response.json();
-            console.log("Respuesta de la API:", data); // Mostrar datos en la consola
-
-            if (data.length > 0) {
-                let nombre = data[0]["Nombre"] ? data[0]["Nombre"].trim() : "Desconocido";
-                let rango = data[0]["Rango"] ? data[0]["Rango"].trim() : "No especificado";
-                let cedula = data[0]["Cedula"] ? data[0]["Cedula"].trim() : "No disponible";
-
-                console.log(`Datos extraídos -> Nombre: ${nombre}, Cédula: ${cedula}, Rango: ${rango}`);
-
-                resultado.innerHTML = `
-                    <p style="color: green;">✔️ Usted pertenece a la asociación.</p>
-                    <strong>Nombre:</strong> ${nombre} <br>
-                    <strong>Cédula:</strong> ${cedula} <br>
-                    <strong>Rango:</strong> ${rango}
-                `;
-            } else {
-                console.log("No se encontró en la base de datos");
-                resultado.innerHTML = "<p style='color: red;'>❌ No se encontró en la base de datos.</p>";
-            }
-        } catch (error) {
-            console.error("Error en la API:", error);
-            resultado.innerHTML = "<p style='color: red;'>⚠️ Error al conectar con la base de datos.</p>";
-        }
-    }
-</script>
-
 <body>
     <h1>Ingrese su Cédula o Codifico</h1>
     <input type="text" id="codigo" placeholder="Ingrese su código">
@@ -65,18 +21,22 @@
                 return;
             }
 
-            let url = `https://corsproxy.io/?https://sheetdb.io/api/v1/nommdgtrlnmya/search_or?Codifico=${codigo}&Cedula=${codigo}`;
+            let url = `https://sheetdb.io/api/v1/nommdgtrlnmya/search_or?Codifico=${codigo}&Cedula=${codigo}`;
             console.log("Consultando URL:", url);
 
             try {
                 let response = await fetch(url);
+                console.log("Estado de la respuesta:", response.status); // Ver si responde bien la API
+
                 let data = await response.json();
-                console.log("Respuesta de la API:", data);
+                console.log("Respuesta de la API:", data); // Mostrar datos en la consola
 
                 if (data.length > 0) {
                     let nombre = data[0]["Nombre"] ? data[0]["Nombre"].trim() : "Desconocido";
                     let rango = data[0]["Rango"] ? data[0]["Rango"].trim() : "No especificado";
                     let cedula = data[0]["Cedula"] ? data[0]["Cedula"].trim() : "No disponible";
+
+                    console.log(`Datos extraídos -> Nombre: ${nombre}, Cédula: ${cedula}, Rango: ${rango}`);
 
                     resultado.innerHTML = `
                         <p style="color: green;">✔️ Usted pertenece a la asociación.</p>
@@ -85,11 +45,12 @@
                         <strong>Rango:</strong> ${rango}
                     `;
                 } else {
+                    console.log("No se encontró en la base de datos");
                     resultado.innerHTML = "<p style='color: red;'>❌ No se encontró en la base de datos.</p>";
                 }
             } catch (error) {
-                resultado.innerHTML = "<p style='color: red;'>⚠️ Error al conectar con la base de datos.</p>";
                 console.error("Error en la API:", error);
+                resultado.innerHTML = "<p style='color: red;'>⚠️ Error al conectar con la base de datos.</p>";
             }
         }
     </script>
