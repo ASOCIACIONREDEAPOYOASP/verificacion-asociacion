@@ -17,7 +17,7 @@
         .container {
             background-color: rgba(255, 255, 255, 0.9);
             padding: 20px;
-            margin: 50px auto;
+            margin: 20px auto;
             width: 80%;
             max-width: 500px;
             border-radius: 10px;
@@ -33,21 +33,15 @@
             margin: 0 15px;
             font-weight: bold;
         }
-        .logo {
-            width: 80px;
-        }
-        .content {
-            margin-top: 20px;
-        }
         .btn {
             display: inline-block;
-            padding: 10px 15px;
-            margin: 10px;
-            font-size: 16px;
+            padding: 10px 20px;
+            margin-top: 10px;
             background-color: rgb(189, 149, 28);
             color: white;
             text-decoration: none;
             border-radius: 5px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -61,26 +55,74 @@
     
     <div class="container" id="verificacion">
         <h2><strong>Validación Unidades A.S.P</strong></h2>
-        <p>Ingrese el número de identificación de la unidad o codifico asignado</p>
-        <input type="text" id="inputDato" placeholder="Ingrese el número de identidad o codifico asignado">
+        <p>Ingrese el número de identificación de la unidad o código asignado</p>
+        <input type="text" id="inputDato" placeholder="Ingrese el número de identidad o código asignado">
         <button onclick="verificarPertenencia()">Verificar</button>
         <p id="resultado"></p>
     </div>
 
     <div class="container" id="mision">
         <h2>Misión y Visión</h2>
-        <p><strong>Misión:</strong> La Asociación Red de Apoyo A.S.P se dedica a ayudar, servir y proteger a la comunidad en colaboración con organismos gubernamentales. Nuestro compromiso es garantizar la seguridad, promover la paz y el bienestar social, así como brindar asistencia en situaciones de emergencia y vulnerabilidad, siempre actuando con integridad, respeto y solidaridad.</p>
-        <p><strong>Visión:</strong> Ser reconocidos como un grupo operativo líder en la protección y servicio a la comunidad, trabajando de la mano con organismos gubernamentales para fortalecer la seguridad y el bienestar social. Aspiramos a crear un entorno seguro y solidario donde cada persona se sienta protegida y apoyada, contribuyendo al desarrollo sostenible y a la protección de los recursos culturales y naturales de nuestro país.</p>
+        <p><strong>Misión:</strong> La Asociación Red de Apoyo A.S.P se dedica a ayudar, servir y proteger a la comunidad en colaboración con organismos gubernamentales. Nuestro compromiso es garantizar la seguridad, promover la paz y el bienestar social.</p>
+        <p><strong>Visión:</strong> Ser reconocidos como un grupo operativo líder en la protección y servicio a la comunidad, trabajando de la mano con organismos gubernamentales para fortalecer la seguridad y el bienestar social.</p>
     </div>
     
     <div class="container" id="reglamento">
         <h2>Reglamento Interno</h2>
-        <a href="https://docs.google.com/document/d/1CTY-o3vNefEbDAQnThjYGxDXYWa02m1F/edit?usp=sharing" target="_blank" class="btn">Ver Reglamento Interno</a>
+        <a class="btn" href="https://docs.google.com/document/d/1CTY-o3vNefEbDAQnThjYGxDXYWa02m1F/edit?usp=sharing" target="_blank">Ver Reglamento Interno</a>
     </div>
 
     <div class="container" id="manual">
         <h2>Manual de Convivencia</h2>
-        <a href="https://docs.google.com/document/d/199rYTmugJX-xzhLLDl5j_Y7FQdpSx2sibgsDCaGwqFk/edit?usp=sharing" target="_blank" class="btn">Ver Manual de Convivencia</a>
+        <a class="btn" href="https://docs.google.com/document/d/199rYTmugJX-xzhLLDl5j_Y7FQdpSx2sibgsDCaGwqFk/edit?usp=sharing" target="_blank">Ver Manual de Convivencia</a>
     </div>
+
+    <script>
+        async function verificarPertenencia() {
+            let dato = document.getElementById("inputDato").value.trim();
+            let resultado = document.getElementById("resultado");
+        
+            if (dato === "") {
+                resultado.innerText = "Por favor, ingrese un valor.";
+                return;
+            }
+        
+            let url = `https://sheetdb.io/api/v1/nommdgtrlnmya/search_or?Codifico=${dato}&Cedula=${dato}`;
+        
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+        
+                if (data.length > 0) {
+                    let nombre = data[0].Nombre || "Desconocido";
+                    let apellidos = data[0].Apellidos || "Desconocido";
+                    let rango = data[0].Rango || "No especificado";
+                    let estado = data[0].Estado || "Número no encontrado";
+                    let estadoMensaje = "";
+                    switch (estado) {
+                        case "Activo":
+                            estadoMensaje = "✅ Esta unidad se encuentra en servicio dentro de la Asociación Red de Apoyo A.S.P., contando con todos los beneficios, respaldo y facultades otorgadas por la organización.";
+                            break;
+                        case "Inactivo":
+                            estadoMensaje = "⚠️ Esta unidad está vinculada a la Asociación Red de Apoyo A.S.P., pero actualmente no se encuentra en servicio activo. Por lo tanto, no cuenta con los beneficios, respaldo ni facultades otorgadas por la asociación hasta nueva actualización de su estado.";
+                            break;
+                        case "Desvinculado":
+                            estadoMensaje = "❌ Se informa que esta unidad ha sido desvinculada de la Asociación Red de Apoyo A.S.P. Por lo tanto, no cuenta con ningún beneficio, respaldo ni autorización para actuar en nombre de la asociación. Se solicita a la autoridad que realice la validación proceder con la retención y destrucción de la identificación presentada.";
+                            break;
+                        default:
+                            estadoMensaje = "❌ El número de identificación o código ingresado no se encuentra en la base de datos de la Asociación Red de Apoyo A.S.P. Por lo tanto, la persona que presenta esta identificación no pertenece a la asociación ni cuenta con su respaldo o autorización. Se recomienda a la autoridad tomar las medidas pertinentes.";
+                            estado = "No Registrado";
+                            rango = "No Aplica";
+                            break;
+                    }
+                    resultado.innerHTML = `<strong>Nombre:</strong> ${nombre} ${apellidos}<br><strong>Rango:</strong> ${rango}<br><strong>Estado:</strong> ${estado}<br><br>${estadoMensaje}`;
+                } else {
+                    resultado.innerHTML = "❌ Estado: No Registrado<br><br>El número de identificación o código ingresado no se encuentra en la base de datos de la Asociación Red de Apoyo A.S.P. Por lo tanto, la persona que presenta esta identificación no pertenece a la asociación ni cuenta con su respaldo o autorización. Se recomienda a la autoridad tomar las medidas pertinentes.";
+                }
+            } catch (error) {
+                resultado.innerText = "Error al conectar con la base de datos.";
+            }
+        }
+    </script>
 </body>
 </html>
