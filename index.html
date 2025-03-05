@@ -3,37 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificación de Asociación</title>
+    <title>Verificación de Pertenencia</title>
 </head>
 <body>
+    <img src="https://raw.githubusercontent.com/ASOCIACIONREDEAPOYOASP/verificacion-asociacion/1700ddf01be7652394071f475605a2c72c906a0a/Sin%20t%C3%ADtulo-4.png" alt="Logo de la asociación">
     <h2>Ingrese su Cédula o Codifico</h2>
-    <input type="text" id="inputIdentificacion" placeholder="Ingrese su número">
-    <button onclick="verificarUsuario()">Verificar</button>
+    <input type="text" id="inputDato" placeholder="Ingrese su Cédula o Codifico">
+    <button onclick="verificarPertenencia()">Verificar</button>
     <p id="resultado"></p>
 
     <script>
-        function verificarUsuario() {
-            let identificacion = document.getElementById("inputIdentificacion").value;
-            if (!identificacion) {
-                document.getElementById("resultado").innerText = "Por favor, ingrese un número válido.";
+        async function verificarPertenencia() {
+            let dato = document.getElementById("inputDato").value.trim();
+            let resultado = document.getElementById("resultado");
+        
+            if (dato === "") {
+                resultado.innerText = "Por favor, ingrese un valor.";
                 return;
             }
-            
-            fetch(`https://corsproxy.io/?https://sheetdb.io/api/v1/nommdgtrlnmya/search?or=(Cedula=${identificacion},Codifico=${identificacion})`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data); // Verifica en consola los datos obtenidos
-                    if (data.length > 0) {
-                        document.getElementById("resultado").innerHTML = `✅ Usted pertenece a la asociación.<br><strong>Nombre:</strong> ${data[0].Nombre} ${data[0].Apellidos}<br><strong>Rango:</strong> ${data[0].Rango}`;
-                    } else {
-                        document.getElementById("resultado").innerText = "❌ No se encontró en la base de datos.";
-                    }
-                })
-                .catch(error => {
-                    console.error("Error en la API:", error);
-                    document.getElementById("resultado").innerText = "Hubo un error en la consulta. Inténtelo de nuevo.";
-                });
+        
+            let url = `https://sheetdb.io/api/v1/nommdgtrlnmya/search_or?Codifico=${dato}&Cedula=${dato}`;
+        
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+        
+                if (data.length > 0) {
+                    console.log("Datos recibidos:", data);  // Para depuración
+                    let nombre = data[0].Nombre ? data[0].Nombre : "Desconocido";
+                    let rango = data[0].Rango ? data[0].Rango : "No especificado";
+                    resultado.innerHTML = `
+                        ✔️ Usted pertenece a la asociación.<br>
+                        <strong>Nombre:</strong> ${nombre}<br>
+                        <strong>Rango:</strong> ${rango}
+                    `;
+                } else {
+                    resultado.innerText = "❌ No se encontró en la base de datos.";
+                }
+            } catch (error) {
+                resultado.innerText = "⚠️ Error al conectar con la base de datos.";
+            }
         }
+        
     </script>
 </body>
 </html>
