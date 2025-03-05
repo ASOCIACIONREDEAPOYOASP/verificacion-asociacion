@@ -21,15 +21,19 @@
                 return;
             }
 
-            let url = `https://sheetdb.io/api/v1/nommdgtrlnmya/search_or?Codifico=${codigo}&Cedula=${codigo}`;
+            let url = `https://corsproxy.io/?https://sheetdb.io/api/v1/nommdgtrlnmya/search_or?Codifico=${codigo}&Cedula=${codigo}`;
             console.log("Consultando URL:", url);
 
             try {
                 let response = await fetch(url);
-                console.log("Estado de la respuesta:", response.status); // Ver si responde bien la API
+                console.log("Estado de la respuesta:", response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
 
                 let data = await response.json();
-                console.log("Respuesta de la API:", data); // Mostrar datos en la consola
+                console.log("Respuesta de la API:", data);
 
                 if (data.length > 0) {
                     let nombre = data[0]["Nombre"] ? data[0]["Nombre"].trim() : "Desconocido";
