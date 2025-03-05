@@ -4,14 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Validación Unidades A.S.P</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: url('https://raw.githubusercontent.com/ASOCIACIONREDEAPOYOASP/verificacion-asociacion/1700ddf01be7652394071f475605a2c72c906a0a/Sin%20t%C3%ADtulo-4.png') no-repeat center center fixed;
+            background-size: 650px;
+            background-color: rgb(0, 121, 67);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            margin: 50px auto;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        nav {
+            background: rgb(189, 149, 28);
+            padding: 10px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .logo {
+            width: 80px;
+        }
+        .content {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <img src="https://raw.githubusercontent.com/ASOCIACIONREDEAPOYOASP/verificacion-asociacion/1700ddf01be7652394071f475605a2c72c906a0a/Sin%20t%C3%ADtulo-4.png" alt="Logo de la asociación">
-    <h2><strong>Validación Unidades A.S.P</strong></h2>
-    <p>Ingrese el número de identificación de la unidad</p>
-    <input type="text" id="inputDato" placeholder="Ingrese el número de identidad o codifico asignado">
-    <button onclick="verificarPertenencia()">Verificar</button>
-    <p id="resultado"></p>
+    <nav>
+        <a href="#verificacion">Verificación</a>
+        <a href="#mision">Misión y Visión</a>
+        <a href="#reglamento">Reglamento Interno</a>
+        <a href="#manual">Manual de Convivencia</a>
+    </nav>
+    
+    <div class="container" id="verificacion">
+        <h2><strong>Validación Unidades A.S.P</strong></h2>
+        <p>Ingrese el número de identificación de la unidad o codifico asignado</p>
+        <input type="text" id="inputDato" placeholder="Ingrese el número de identidad o codifico asignado">
+        <button onclick="verificarPertenencia()">Verificar</button>
+        <p id="resultado"></p>
+    </div>
+
+    <div class="container" id="mision">
+        <h2>Misión y Visión</h2>
+        <p>Aquí se incluirá la misión y visión de la asociación...</p>
+    </div>
+    
+    <div class="container" id="reglamento">
+        <h2>Reglamento Interno</h2>
+        <p>Aquí se incluirá el reglamento interno de la asociación...</p>
+    </div>
+
+    <div class="container" id="manual">
+        <h2>Manual de Convivencia</h2>
+        <p>Aquí se incluirá el manual de convivencia...</p>
+    </div>
 
     <script>
         async function verificarPertenencia() {
@@ -30,7 +89,7 @@
                 let data = await response.json();
         
                 if (data.length > 0) {
-                    console.log("Datos recibidos:", data);  // Para depuración
+                    console.log("Datos recibidos:", data);
                     let nombre = data[0].Nombre ? data[0].Nombre : "Desconocido";
                     let rango = data[0].Rango ? data[0].Rango : "No especificado";
                     resultado.innerHTML = `
@@ -45,7 +104,6 @@
                 resultado.innerText = "⚠️ Error al conectar con la base de datos.";
             }
         }
-        
     </script>
 </body>
 </html>
