@@ -3,93 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificación Asociación</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-            max-width: 400px;
-        }
-        input {
-            padding: 10px;
-            width: 80%;
-            margin: 10px 0;
-            display: block;
-            text-align: center;
-        }
-        button {
-            padding: 10px 15px;
-            background: #28a745;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #218838;
-        }
-        #resultado {
-            margin-top: 15px;
-            font-size: 1.1em;
-        }
-    </style>
+    <title>Verificación de Asociación</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Verificación de Pertenencia</h1>
-        <input type="text" id="codigo" placeholder="Ingrese su código">
-        <button onclick="verificarPertenencia()">Verificar</button>
-        <p id="resultado"></p>
-    </div>
+    <h2>Ingrese su Cédula o Codifico</h2>
+    <input type="text" id="inputCedula" placeholder="Ingrese su número">
+    <button onclick="verificarUsuario()">Verificar</button>
+    <p id="resultado"></p>
 
     <script>
-        async function verificarPertenencia() {
-            let codigo = document.getElementById("codigo").value.trim();
-            let resultado = document.getElementById("resultado");
-            resultado.innerHTML = "";
-
-            if (codigo === "") {
-                resultado.innerHTML = "<p style='color: red;'>⚠️ Por favor, ingrese un valor.</p>";
+        function verificarUsuario() {
+            let cedula = document.getElementById("inputCedula").value;
+            if (!cedula) {
+                document.getElementById("resultado").innerText = "Por favor, ingrese un número válido.";
                 return;
             }
-
-            let url = `https://corsproxy.io/?https://sheetdb.io/api/v1/nommdgtrlnmya/search_or?Codifico=${codigo}&Cedula=${codigo}`;
-            console.log("Consultando URL:", url);
-
-            try {
-                let response = await fetch(url);
-
-                if (!response.ok) {
-                    throw new Error(`Error HTTP: ${response.status}`);
-                }
-
-                let data = await response.json();
-                console.log("Respuesta de la API:", data);
-
-                if (data.length > 0) {
-                    let nombre = data[0]["Nombre"] ? data[0]["Nombre"].trim() : "Desconocido";
-                    let rango = data[0]["Rango"] ? data[0]["Rango"].trim() : "No especificado";
-
-                    resultado.innerHTML = `
-                        <p style="color: green;">✔️ Usted pertenece a la asociación.</p>
-                        <strong>Nombre:</strong> ${nombre} <br>
-                        <strong>Rango:</strong> ${rango}
-                    `;
-                } else {
-                    resultado.innerHTML = "<p style='color: red;'>❌ No se encontró en la base de datos.</p>";
-                }
-            } catch (error) {
-                console.error("Error en la API:", error);
-                resultado.innerHTML = "<p style='color: red;'>⚠️ Error al conectar con la base de datos.</p>";
-            }
+            
+            fetch(`https://corsproxy.io/?https://sheetdb.io/api/v1/nommdgtrlnmya/search?Cedula=${cedula}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); // Verifica en consola los datos obtenidos
+                    if (data.length > 0) {
+                        document.getElementById("resultado").innerText = `✅ Usted pertenece a la asociación. Nombre: ${data[0].Nombre}, Rango: ${data[0].Rango}`;
+                    } else {
+                        document.getElementById("resultado").innerText = "❌ No se encontró en la base de datos.";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error en la API:", error);
+                    document.getElementById("resultado").innerText = "Hubo un error en la consulta. Inténtelo de nuevo.";
+                });
         }
     </script>
 </body>
