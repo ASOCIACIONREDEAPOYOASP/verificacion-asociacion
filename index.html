@@ -29,8 +29,16 @@
                 let data = await response.json();
 
                 if (data.length > 0) {
-                    resultado.innerText = "✔️ Usted pertenece a la asociación.";
-                } else {
+                    let nombre = data[0].Nombre || "Desconocido";
+                    let rango = data[0].Rango || "No especificado";
+                
+                    resultado.innerHTML = `
+                        ✔️ Usted pertenece a la asociación.<br>
+                        <strong>Nombre:</strong> ${nombre}<br>
+                        <strong>Rango:</strong> ${rango}
+                    `;
+                }
+                 else {
                     resultado.innerText = "❌ No se encontró en la base de datos.";
                 }
             } catch (error) {
