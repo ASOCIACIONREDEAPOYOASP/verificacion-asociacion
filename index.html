@@ -30,9 +30,8 @@
         
                 if (data.length > 0) {
                     console.log("Datos recibidos:", data);  // Para depuración
-                    let nombre = data[0]["Nombre"] || "Desconocido";
-                    let rango = data[0]["Rango"] || "No especificado";
-        
+                    let nombre = data[0].Nombre ? data[0].Nombre : "Desconocido";
+                    let rango = data[0].Rango ? data[0].Rango : "No especificado";
                     resultado.innerHTML = `
                         ✔️ Usted pertenece a la asociación.<br>
                         <strong>Nombre:</strong> ${nombre}<br>
