@@ -7,24 +7,24 @@
 </head>
 <body>
     <h2>Ingrese su Cédula o Codifico</h2>
-    <input type="text" id="inputCedula" placeholder="Ingrese su número">
+    <input type="text" id="inputIdentificacion" placeholder="Ingrese su número">
     <button onclick="verificarUsuario()">Verificar</button>
     <p id="resultado"></p>
 
     <script>
         function verificarUsuario() {
-            let cedula = document.getElementById("inputCedula").value;
-            if (!cedula) {
+            let identificacion = document.getElementById("inputIdentificacion").value;
+            if (!identificacion) {
                 document.getElementById("resultado").innerText = "Por favor, ingrese un número válido.";
                 return;
             }
             
-            fetch(`https://corsproxy.io/?https://sheetdb.io/api/v1/nommdgtrlnmya/search?Cedula=${cedula}`)
+            fetch(`https://corsproxy.io/?https://sheetdb.io/api/v1/nommdgtrlnmya/search?or=(Cedula=${identificacion},Codifico=${identificacion})`)
                 .then(response => response.json())
                 .then(data => {
                     console.log(data); // Verifica en consola los datos obtenidos
                     if (data.length > 0) {
-                        document.getElementById("resultado").innerText = `✅ Usted pertenece a la asociación. Nombre: ${data[0].Nombre}, Rango: ${data[0].Rango}`;
+                        document.getElementById("resultado").innerHTML = `✅ Usted pertenece a la asociación.<br><strong>Nombre:</strong> ${data[0].Nombre} ${data[0].Apellidos}<br><strong>Rango:</strong> ${data[0].Rango}`;
                     } else {
                         document.getElementById("resultado").innerText = "❌ No se encontró en la base de datos.";
                     }
