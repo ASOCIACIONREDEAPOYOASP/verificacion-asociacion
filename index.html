@@ -3,65 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificación de Pertenencia</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-        }
-        img {
-            width: 200px;
-        }
-        #resultado {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            display: inline-block;
-            text-align: left;
-            background-color: #f9f9f9;
-        }
-    </style>
+    <title>Verificación Asociación</title>
 </head>
 <body>
-    <img src="https://raw.githubusercontent.com/ASOCIACIONREDEAPOYOASP/verificacion-asociacion/1700ddf01be7652394071f475605a2c72c906a0a/Sin%20t%C3%ADtulo-4.png" alt="Logo de la asociación">
-    <h2>Ingrese su Cédula o Codifico</h2>
-    <input type="text" id="inputDato" placeholder="Ingrese su Cédula o Codifico">
+    <h1>Ingrese su Cédula o Codifico</h1>
+    <input type="text" id="codigo" placeholder="Ingrese su código">
     <button onclick="verificarPertenencia()">Verificar</button>
-    <div id="resultado"></div>
-
+    <p id="resultado"></p>
+    
     <script>
-        async function verificarPertenencia() {
-            let dato = document.getElementById("inputDato").value.trim();
-            let resultado = document.getElementById("resultado");
-        
-            if (dato === "") {
-                resultado.innerHTML = "<p style='color: red;'>⚠️ Por favor, ingrese un valor.</p>";
-                return;
-            }
-        
-            let url = `https://sheetdb.io/api/v1/nommdgtrlnmya/search_or?Codifico=${dato}&Cedula=${dato}`;
-        
-            try {
-                let response = await fetch(url);
-                let data = await response.json();
-        
-                if (data.length > 0) {
-                    console.log("Datos recibidos:", data);  // Para depuración
-                    let nombre = data[0]["Nombre"] || "Desconocido";
-                    let rango = data[0]["Rango"] || "No especificado";
-        
-                    resultado.innerHTML = `
-                        <p style="color: green;">✔️ Usted pertenece a la asociación.</p>
-                        <strong>Nombre:</strong> ${nombre} <br>
-                        <strong>Rango:</strong> ${rango}
-                    `;
-                } else {
-                    resultado.innerHTML = "<p style='color: red;'>❌ No se encontró en la base de datos.</p>";
-                }
-            } catch (error) {
-                resultado.innerHTML = "<p style='color: red;'>⚠️ Error al conectar con la base de datos.</p>";
-            }
+        function verificarPertenencia() {
+            let codigo = document.getElementById("codigo").value;
+            let url = `https://sheetdb.io/api/v1/nommdgtrlnmya/search_or?Codifico=${codigo}&Cédula=${codigo}`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    let resultado = document.getElementById("resultado");
+                    if (data.length > 0) {
+                        let nombre = data[0].Nombre;
+                        let rango = data[0].Rango;
+                        resultado.innerHTML = `✔️ <b>${nombre}</b> - <b>${rango}</b> pertenece a la asociación.`;
+                    } else {
+                        resultado.innerHTML = "❌ No se encontró en la asociación.";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error en la API:", error);
+                    document.getElementById("resultado").innerHTML = "❌ Error en la consulta.";
+                });
         }
     </script>
 </body>
