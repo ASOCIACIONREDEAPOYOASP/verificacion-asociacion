@@ -29,7 +29,9 @@
                 let data = await response.json();
         
                 if (data.length > 0) {
-                    console.log("Datos recibidos:", data);  // Para depuración
+                    console.log("Datos completos recibidos:", data);
+                    alert(JSON.stringify(data, null, 2)); // Esto mostrará los datos en un cuadro emergente
+
                     let nombre = data[0].Nombre ? data[0].Nombre : "Desconocido";
                     let rango = data[0].Rango ? data[0].Rango : "No especificado";
                     resultado.innerHTML = `
