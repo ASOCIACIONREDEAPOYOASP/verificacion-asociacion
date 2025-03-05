@@ -8,8 +8,8 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 50px;
             background-color: #f4f4f4;
+            padding: 20px;
         }
         .container {
             background: white;
@@ -17,11 +17,14 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: inline-block;
+            max-width: 400px;
         }
         input {
             padding: 10px;
             width: 80%;
             margin: 10px 0;
+            display: block;
+            text-align: center;
         }
         button {
             padding: 10px 15px;
@@ -37,20 +40,6 @@
             margin-top: 15px;
             font-size: 1.1em;
         }
-        .loader {
-            display: none;
-            margin: 10px auto;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
     </style>
 </head>
 <body>
@@ -58,7 +47,6 @@
         <h1>Verificación de Pertenencia</h1>
         <input type="text" id="codigo" placeholder="Ingrese su código">
         <button onclick="verificarPertenencia()">Verificar</button>
-        <div class="loader" id="loader"></div>
         <p id="resultado"></p>
     </div>
 
@@ -66,19 +54,16 @@
         async function verificarPertenencia() {
             let codigo = document.getElementById("codigo").value.trim();
             let resultado = document.getElementById("resultado");
-            let loader = document.getElementById("loader");
-
             resultado.innerHTML = "";
-            
+
             if (codigo === "") {
                 resultado.innerHTML = "<p style='color: red;'>⚠️ Por favor, ingrese un valor.</p>";
                 return;
             }
 
-            loader.style.display = "block"; // Muestra la animación de carga
-
             let url = `https://corsproxy.io/?https://sheetdb.io/api/v1/nommdgtrlnmya/search_or?Codifico=${codigo}&Cedula=${codigo}`;
-            
+            console.log("Consultando URL:", url);
+
             try {
                 let response = await fetch(url);
 
@@ -87,7 +72,8 @@
                 }
 
                 let data = await response.json();
-                
+                console.log("Respuesta de la API:", data);
+
                 if (data.length > 0) {
                     let nombre = data[0]["Nombre"] ? data[0]["Nombre"].trim() : "Desconocido";
                     let rango = data[0]["Rango"] ? data[0]["Rango"].trim() : "No especificado";
@@ -101,9 +87,8 @@
                     resultado.innerHTML = "<p style='color: red;'>❌ No se encontró en la base de datos.</p>";
                 }
             } catch (error) {
+                console.error("Error en la API:", error);
                 resultado.innerHTML = "<p style='color: red;'>⚠️ Error al conectar con la base de datos.</p>";
-            } finally {
-                loader.style.display = "none"; // Oculta la animación de carga
             }
         }
     </script>
