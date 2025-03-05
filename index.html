@@ -30,12 +30,14 @@
                 console.log("Respuesta de la API:", data);
 
                 if (data.length > 0) {
-                    let nombre = data[0]["Nombre"] || "Desconocido";
-                    let rango = data[0]["Rango"] || "No especificado";
+                    let nombre = data[0]["Nombre"] ? data[0]["Nombre"].trim() : "Desconocido";
+                    let rango = data[0]["Rango"] ? data[0]["Rango"].trim() : "No especificado";
+                    let cedula = data[0]["Cedula"] ? data[0]["Cedula"].trim() : "No disponible";
 
                     resultado.innerHTML = `
                         <p style="color: green;">✔️ Usted pertenece a la asociación.</p>
                         <strong>Nombre:</strong> ${nombre} <br>
+                        <strong>Cédula:</strong> ${cedula} <br>
                         <strong>Rango:</strong> ${rango}
                     `;
                 } else {
