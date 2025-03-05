@@ -16,28 +16,30 @@
         async function verificarPertenencia() {
             let dato = document.getElementById("inputDato").value.trim();
             let resultado = document.getElementById("resultado");
-        
+
             if (dato === "") {
                 resultado.innerText = "Por favor, ingrese un valor.";
                 return;
             }
-        
+
             let url = `https://sheetdb.io/api/v1/nommdgtrlnmya/search_or?Codifico=${dato}&Cedula=${dato}`;
-        
+
             try {
                 let response = await fetch(url);
                 let data = await response.json();
-        
+                
+                console.log("Datos recibidos:", data); // Para ver en la consola los datos reales
+                
                 if (data.length > 0) {
-                    console.log("Datos completos recibidos:", data);
-                    alert(JSON.stringify(data, null, 2)); // Esto mostrará los datos en un cuadro emergente
+                    let nombre = data[0]["Nombre"] || "Nombre no disponible";
+                    let rango = data[0]["Rango"] || "Rango no disponible";
 
-                    let nombre = data[0].Nombre ? data[0].Nombre : "Desconocido";
-                    let rango = data[0].Rango ? data[0].Rango : "No especificado";
                     resultado.innerHTML = `
-                        ✔️ Usted pertenece a la asociación.<br>
-                        <strong>Nombre:</strong> ${nombre}<br>
-                        <strong>Rango:</strong> ${rango}
+                        <p style="border: 2px solid black; padding: 10px; width: 300px; margin: auto;">
+                            ✔️ <strong>Usted pertenece a la asociación.</strong><br>
+                            <strong>Nombre:</strong> ${nombre}<br>
+                            <strong>Rango:</strong> ${rango}
+                        </p>
                     `;
                 } else {
                     resultado.innerText = "❌ No se encontró en la base de datos.";
@@ -46,7 +48,6 @@
                 resultado.innerText = "⚠️ Error al conectar con la base de datos.";
             }
         }
-        
     </script>
 </body>
 </html>
